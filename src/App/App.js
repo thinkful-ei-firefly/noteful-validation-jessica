@@ -8,6 +8,9 @@ import NotePageMain from '../NotePageMain/NotePageMain';
 import ApiContext from '../ApiContext';
 import config from '../config';
 import './App.css';
+import AddFolder from '../AddFolder/AddFolder';
+import AddNote from '../AddNote/AddNote';
+import ErrorBound from '../ErrorBound/ErrorBound';
 
 class App extends Component {
     state = {
@@ -42,6 +45,18 @@ class App extends Component {
         });
     };
 
+    handleAddFolder = (newFolder) => {
+        this.setState({
+            folders: [...this.state.folders, newFolder]
+        })
+    }
+
+    handleAddNote = (newNote) => {
+        this.setState({
+            notes: [...this.state.notes, newNote]
+        })
+    }
+
     renderNavRoutes() {
         return (
             <>
@@ -54,8 +69,8 @@ class App extends Component {
                     />
                 ))}
                 <Route path="/note/:noteId" component={NotePageNav} />
-                <Route path="/add-folder" component={NotePageNav} />
-                <Route path="/add-note" component={NotePageNav} />
+                <Route path="/add-folder" component={AddFolder} />
+                <Route path="/add-note" component={AddNote} />
             </>
         );
     }
@@ -80,10 +95,13 @@ class App extends Component {
         const value = {
             notes: this.state.notes,
             folders: this.state.folders,
-            deleteNote: this.handleDeleteNote
+            deleteNote: this.handleDeleteNote,
+            addFolder: this.handleAddFolder,
+            addNote: this.handleAddNote
         };
         return (
             <ApiContext.Provider value={value}>
+                <ErrorBound>
                 <div className="App">
                     <nav className="App__nav">{this.renderNavRoutes()}</nav>
                     <header className="App__header">
@@ -94,6 +112,7 @@ class App extends Component {
                     </header>
                     <main className="App__main">{this.renderMainRoutes()}</main>
                 </div>
+                </ErrorBound>
             </ApiContext.Provider>
         );
     }
